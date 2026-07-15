@@ -1,7 +1,21 @@
-export default function Header({ view, query, onQueryChange, onGoHome, modCount }) {
+import { Link, useLocation, useSearchParams } from 'react-router-dom';
+
+export default function Header({ modCount }) {
+  const location = useLocation();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const isHome = location.pathname === '/';
+  const query = searchParams.get('q') || '';
+
+  function onQueryChange(value) {
+    const next = new URLSearchParams(searchParams);
+    if (value) next.set('q', value);
+    else next.delete('q');
+    setSearchParams(next, { replace: true });
+  }
+
   return (
     <div className="header">
-      <div className="header-brand" onClick={onGoHome}>
+      <Link to="/" className="header-brand">
         <div className="header-logo">&gt;</div>
         <div>
           <div className="header-title">
@@ -20,15 +34,15 @@ export default function Header({ view, query, onQueryChange, onGoHome, modCount 
             </div>
           </div>
         </div>
-      </div>
+      </Link>
 
-      {view === 'mod' && (
-        <button className="back-btn" onClick={onGoHome}>
+      {!isHome && (
+        <Link to="/" className="back-btn">
           ← ALL MODS
-        </button>
+        </Link>
       )}
 
-      {view === 'home' && (
+      {isHome && (
         <input
           className="search-input"
           value={query}

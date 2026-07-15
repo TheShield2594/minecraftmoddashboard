@@ -1,0 +1,8 @@
+services:
+  modpack-codex:
+    build: .
+    image: modpack-codex:latest
+    container_name: modpack-codex
+    ports:
+      - "8080:80"
+    restart: unless-stopped

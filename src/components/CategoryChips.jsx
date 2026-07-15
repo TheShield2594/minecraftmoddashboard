@@ -1,6 +1,6 @@
 import { CATEGORIES, catColor, catColorBg, catColorBorder } from '../data/mods';
 
-export default function CategoryChips({ category, onSelect }) {
+export default function CategoryChips({ category, counts, onSelect }) {
   return (
     <div className="chip-row">
       {CATEGORIES.map((cat) => {
@@ -14,6 +14,7 @@ export default function CategoryChips({ category, onSelect }) {
         return (
           <button key={cat.key} className="chip" style={style} onClick={() => onSelect(cat.key)}>
             {cat.label}
+            <span className="chip-count"> ({counts?.[cat.key] ?? 0})</span>
           </button>
         );
       })}

@@ -72,6 +72,8 @@ a:hover {
   align-items: center;
   gap: 12px;
   cursor: pointer;
+  color: oklch(0.93 0.01 260);
+  text-decoration: none;
 }
 
 .header-logo {
@@ -157,6 +159,8 @@ a:hover {
 }
 
 .back-btn {
+  display: inline-flex;
+  align-items: center;
   font-family: 'JetBrains Mono', monospace;
   font-size: 13px;
   color: oklch(0.78 0.14 195);
@@ -165,6 +169,7 @@ a:hover {
   border-radius: 8px;
   padding: 9px 16px;
   cursor: pointer;
+  text-decoration: none;
   transition: background 0.15s;
 }
 
@@ -236,6 +241,10 @@ a:hover {
   background-color: transparent;
 }
 
+.chip-count {
+  opacity: 0.65;
+}
+
 .mod-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -262,8 +271,39 @@ a:hover {
 
 .mod-card-top {
   display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.mod-card-heading {
+  display: flex;
   align-items: center;
   gap: 12px;
+  min-width: 0;
+}
+
+.mod-card-badges {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.badge {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.02em;
+  padding: 3px 7px;
+  border-radius: 999px;
+  border: 1px solid oklch(0.35 0.02 260);
+  white-space: nowrap;
+}
+
+.badge-note {
+  color: oklch(0.78 0.14 195);
+  border-color: oklch(0.78 0.14 195 / 0.4);
+  background: oklch(0.78 0.14 195 / 0.12);
 }
 
 .mod-icon {
@@ -419,6 +459,10 @@ a:hover {
   color: oklch(0.9 0.01 260);
 }
 
+.mod-nav-link.active {
+  font-weight: 700;
+}
+
 .mod-sections {
   flex: 1 1 480px;
   display: flex;
@@ -433,19 +477,49 @@ a:hover {
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: oklch(0.6 0.02 260);
+  margin: 0;
+}
+
+.mod-sections > section > .section-title {
   margin: 0 0 16px;
+}
+
+.section-heading-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.section-heading-row .section-title {
+  margin: 0;
+}
+
+.progress-count {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.06em;
 }
 
 .progression-list {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 6px;
 }
 
 .progression-step {
   display: flex;
   align-items: flex-start;
   gap: 14px;
+  padding: 6px;
+  margin: -6px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.progression-step:hover {
+  background: oklch(0.21 0.016 260);
 }
 
 .progression-index {
@@ -460,6 +534,7 @@ a:hover {
   font-family: 'JetBrains Mono', monospace;
   font-size: 12px;
   font-weight: 700;
+  transition: background 0.15s, color 0.15s;
 }
 
 .progression-text {
@@ -467,6 +542,12 @@ a:hover {
   line-height: 1.6;
   padding-top: 3px;
   color: oklch(0.85 0.01 260);
+  transition: color 0.15s;
+}
+
+.progression-step.done .progression-text {
+  color: oklch(0.55 0.01 260);
+  text-decoration: line-through;
 }
 
 .panel-block {

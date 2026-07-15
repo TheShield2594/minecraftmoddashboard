@@ -1,12 +1,6 @@
-export const CATEGORIES = [
-  { key: 'all', label: 'All Mods' },
-  { key: 'tech', label: 'Tech' },
-  { key: 'storage', label: 'Storage' },
-  { key: 'magic', label: 'Magic' },
-  { key: 'exploration', label: 'Exploration' },
-  { key: 'food', label: 'Food' },
-];
-
+// Known categories get a hand-picked color + icon shape. Add an entry here if
+// you want a new category to look distinct instead of falling back to the
+// generic circle/hashed-hue treatment below.
 export const CAT_LABELS = {
   tech: 'Tech',
   storage: 'Storage',
@@ -17,21 +11,33 @@ export const CAT_LABELS = {
 
 const CAT_HUES = { all: 195, tech: 205, storage: 250, magic: 300, exploration: 140, food: 45 };
 
-export function catColor(key) {
-  return `oklch(0.75 0.15 ${CAT_HUES[key] ?? 200})`;
-}
-export function catColorBg(key) {
-  return `oklch(0.75 0.15 ${CAT_HUES[key] ?? 200} / 0.14)`;
-}
-export function catColorBorder(key) {
-  return `oklch(0.75 0.15 ${CAT_HUES[key] ?? 200} / 0.4)`;
-}
-
 const CAT_CLIP = {
   storage: 'polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%)',
   magic: 'polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)',
   exploration: 'polygon(50% 0%, 100% 100%, 0% 100%)',
 };
+
+// Deterministic fallback hue so an unrecognized category (e.g. one you add
+// yourself) still gets a stable, distinct color instead of always gray.
+function hashHue(key) {
+  let hash = 0;
+  for (let i = 0; i < key.length; i++) hash = (hash * 31 + key.charCodeAt(i)) % 360;
+  return hash;
+}
+
+function hue(key) {
+  return CAT_HUES[key] ?? hashHue(key);
+}
+
+export function catColor(key) {
+  return `oklch(0.75 0.15 ${hue(key)})`;
+}
+export function catColorBg(key) {
+  return `oklch(0.75 0.15 ${hue(key)} / 0.14)`;
+}
+export function catColorBorder(key) {
+  return `oklch(0.75 0.15 ${hue(key)} / 0.4)`;
+}
 
 export function catIconRadius(key) {
   return key === 'food' ? '50%' : key === 'tech' ? '8px' : '0';
@@ -40,6 +46,28 @@ export function catIconClip(key) {
   return CAT_CLIP[key] || 'none';
 }
 
+export function catLabel(key) {
+  return CAT_LABELS[key] || key.charAt(0).toUpperCase() + key.slice(1);
+}
+
+// ---------------------------------------------------------------------------
+// Mod data. Add your own mods here — this is the only file you need to touch
+// to grow the codex. Shape of one entry:
+//
+// {
+//   id: 'kebab-case-unique-id',       // used in the URL: /mod/<id>
+//   name: 'Display Name',
+//   category: 'tech',                 // any string; pick one of CAT_LABELS
+//                                      // above for a hand-picked color, or
+//                                      // use a new word — it still works.
+//   description: 'One or two sentences shown on the card and detail hero.',
+//   machines: [{ name: '...', desc: '...' }, ...],
+//   recipes: [{ ingredients: '...', output: '...' }, ...],
+//   progression: ['Step 1 text', 'Step 2 text', ...],   // ordered, checkable
+//   resourceChains: [{ resource: '...', chain: '...' }, ...],
+//   tips: ['...', '...'],
+// }
+// ---------------------------------------------------------------------------
 export const MODS = [
   {
     id: 'immersive-engineering',
@@ -427,3 +455,17 @@ export const MODS = [
     ],
   },
 ];
+
+// Category chip list, derived from whatever categories actually show up in
+// MODS — add a mod with a new category string and a chip appears for it
+// automatically, no other file to edit.
+export const CATEGORIES = [
+  { key: 'all', label: 'All Mods' },
+  ...[...new Set(MODS.map((m) => m.category))].sort().map((key) => ({ key, label: catLabel(key) })),
+];
+
+export function countsByCategory(mods = MODS) {
+  const counts = { all: mods.length };
+  for (const m of mods) counts[m.category] = (counts[m.category] || 0) + 1;
+  return counts;
+}
