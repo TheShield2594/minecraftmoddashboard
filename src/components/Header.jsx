@@ -20,6 +20,7 @@ export default function Header({ modCount }) {
         <div>
           <div className="header-title">
             MODPACK<span className="accent">.CODEX</span>
+            <span className="version-badge">NeoForge · 1.21.1</span>
           </div>
           <div className="header-status">
             <div className="pulse-dot" />
