@@ -1,38 +1,41 @@
-const NOTES_KEY = 'modpack_codex_notes';
-const PROGRESS_KEY = 'modpack_codex_progress';
-
-function readJSON(key, fallback) {
+async function getJSON(url, fallback) {
   try {
-    const raw = localStorage.getItem(key);
-    return raw ? JSON.parse(raw) : fallback;
+    const res = await fetch(url);
+    if (!res.ok) return fallback;
+    return await res.json();
   } catch {
     return fallback;
   }
 }
 
-function writeJSON(key, value) {
+async function putJSON(url, body) {
   try {
-    localStorage.setItem(key, JSON.stringify(value));
+    await fetch(url, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
   } catch {
-    // storage unavailable (private browsing, quota, etc.) — edits stay in-memory only
+    // API unreachable — edit stays in local state only until the next reload
   }
 }
 
-export function loadNotes() {
-  return readJSON(NOTES_KEY, {});
+// notes shape: { [modId]: text }
+export function fetchNotes() {
+  return getJSON('/api/notes', {});
 }
 
-export function saveNotes(notes) {
-  writeJSON(NOTES_KEY, notes);
+export function saveNote(modId, text) {
+  return putJSON(`/api/notes/${encodeURIComponent(modId)}`, { text });
 }
 
 // progress shape: { [modId]: { [stepIndex]: true } }
-export function loadProgress() {
-  return readJSON(PROGRESS_KEY, {});
+export function fetchProgress() {
+  return getJSON('/api/progress', {});
 }
 
-export function saveProgress(progress) {
-  writeJSON(PROGRESS_KEY, progress);
+export function saveProgressStep(modId, index, done) {
+  return putJSON(`/api/progress/${encodeURIComponent(modId)}/${index}`, { done });
 }
 
 export function progressSummary(mod, progress) {

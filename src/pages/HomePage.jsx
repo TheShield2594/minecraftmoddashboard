@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { MODS, countsByCategory } from '../data/mods';
-import { loadNotes, loadProgress, progressSummary } from '../utils/storage';
+import { fetchNotes, fetchProgress, progressSummary } from '../utils/storage';
 import CategoryChips from '../components/CategoryChips';
 import ModCard from '../components/ModCard';
 
@@ -14,8 +14,8 @@ export default function HomePage() {
   const [progress, setProgress] = useState({});
 
   useEffect(() => {
-    setNotes(loadNotes());
-    setProgress(loadProgress());
+    fetchNotes().then(setNotes);
+    fetchProgress().then(setProgress);
   }, []);
 
   function setCategory(key) {

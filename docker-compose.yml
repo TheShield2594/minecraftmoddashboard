@@ -4,5 +4,10 @@ services:
     image: modpack-codex:latest
     container_name: modpack-codex
     ports:
-      - "8080:80"
+      - "8080:8080"
+    volumes:
+      - modpack-codex-data:/data
     restart: unless-stopped
+
+volumes:
+  modpack-codex-data:
