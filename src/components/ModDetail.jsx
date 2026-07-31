@@ -100,6 +100,17 @@ export default function ModDetail({ mod, note, noteStatus, onNoteChange, progres
           </div>
           <h1 className="mod-hero-name">{mod.name}</h1>
           <div className="mod-hero-desc">{mod.description}</div>
+          {mod.guideUrl && (
+            <a
+              className="guide-link"
+              href={mod.guideUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ color, borderColor: colorBorder, background: colorBg }}
+            >
+              FULL GUIDE ON MINECRAFT-GUIDES.COM ↗
+            </a>
+          )}
         </div>
       </div>
 

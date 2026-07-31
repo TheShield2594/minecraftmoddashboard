@@ -80,6 +80,9 @@ export function normalizeStep(step) {
 //                                      // above for a hand-picked color, or
 //                                      // use a new word — it still works.
 //   description: 'One or two sentences shown on the card and detail hero.',
+//   guideUrl: 'https://...',          // optional external guide/wiki link
+//                                      //  (e.g. minecraft-guides.com); shows
+//                                      //  a button on the detail hero
 //   machines: [{ name: '...', desc: '...' }, ...],
 //   recipes: [{ ingredients: '...', output: '...' }, ...],
 //   guides: [                          // one or more step-by-step guides,
@@ -100,6 +103,7 @@ export function normalizeStep(step) {
 export const MODS = [
   {
     id: 'immersive-engineering',
+    guideUrl: 'https://www.minecraft-guides.com/mod/immersive-engineering/',
     name: 'Immersive Engineering',
     category: 'tech',
     description:
@@ -269,6 +273,7 @@ export const MODS = [
   },
   {
     id: 'create',
+    guideUrl: 'https://www.minecraft-guides.com/wiki/create/',
     name: 'Create',
     category: 'tech',
     description: 'Mechanical, physically-animated contraptions — rotating shafts, gearboxes, and moving trains, all visible in the world.',
@@ -349,6 +354,7 @@ export const MODS = [
   },
   {
     id: 'farmers-delight',
+    guideUrl: 'https://www.minecraft-guides.com/mod/farmers-delight/',
     name: "Farmer's Delight",
     category: 'food',
     description: 'A cozy cooking expansion — new crops, a cutting board, cooking pot, and hearty multi-ingredient meals.',
@@ -432,6 +438,7 @@ export const MODS = [
   },
   {
     id: 'silent-gear',
+    guideUrl: 'https://www.minecraft-guides.com/mod/silent-gear/',
     name: 'Silent Gear',
     category: 'tech',
     description:
@@ -523,6 +530,7 @@ export const MODS = [
   },
   {
     id: 'cataclysm',
+    guideUrl: 'https://www.minecraft-guides.com/wiki/cataclysm/',
     name: 'Cataclysm',
     category: 'combat',
     description:
@@ -614,6 +622,7 @@ export const MODS = [
   },
   {
     id: 'sophisticated-backpacks',
+    guideUrl: 'https://www.minecraft-guides.com/mod/sophisticated-backpacks/',
     name: 'Sophisticated Backpacks',
     category: 'storage',
     description:
@@ -788,6 +797,7 @@ export const MODS = [
   },
   {
     id: 'create-crafts-additions',
+    guideUrl: 'https://www.minecraft-guides.com/mod/create-crafts-additions/',
     name: 'Create: Crafts & Additions',
     category: 'tech',
     description: 'A Create addon that bridges Forge Energy and rotational power, adding wiring, new mechanical crafting stations, and a craftable Musket built from Create-style parts.',
@@ -872,6 +882,7 @@ export const MODS = [
   },
   {
     id: 'create-steam-n-rails',
+    guideUrl: 'https://www.minecraft-guides.com/mod/create-steam-n-rails/',
     name: "Create: Steam 'n' Rails",
     category: 'tech',
     description: "A Create addon that expands the base mod's train system with steam-powered locomotives, dozens of cosmetic track types, signal blocks, and couplers for building long multi-car trains.",
@@ -1040,6 +1051,7 @@ export const MODS = [
   },
   {
     id: 'minecraft-comes-alive-reborn',
+    guideUrl: 'https://www.minecraft-guides.com/mod/minecaft-comes-alive-reborn/',
     name: 'Minecraft Comes Alive: Reborn',
     category: 'villagers',
     description: 'Overhauls vanilla villagers into fully human NPCs with unique genders, voices, and appearances, plus deep relationship, marriage, and family systems.',
@@ -1124,6 +1136,7 @@ export const MODS = [
   },
   {
     id: 'guard-villagers',
+    guideUrl: 'https://www.minecraft-guides.com/mod/guard-villagers/',
     name: 'Guard Villagers',
     category: 'villagers',
     description: 'Adds hireable villager guards that you can equip, station on patrol, or bring along to defend villages from monsters and raiders.',
@@ -1204,6 +1217,7 @@ export const MODS = [
   },
   {
     id: 'towns-and-towers',
+    guideUrl: 'https://www.minecraft-guides.com/mod/towns-and-towers/',
     name: 'Towns and Towers',
     category: 'villagers',
     description: 'Adds over 50 new village, pillager outpost, and ship structures spread across many biomes, with more detailed, real-world-inspired architecture layered onto vanilla generation.',
@@ -1284,6 +1298,7 @@ export const MODS = [
   },
   {
     id: 'overhauled-villages',
+    guideUrl: 'https://www.minecraft-guides.com/mod/overhauled-villages/',
     name: 'Overhauled Villages',
     category: 'villagers',
     description: 'Replaces vanilla village and pillager outpost generation with 23 larger, biome-styled village variants and 14 detailed outpost variants, built entirely from vanilla blocks.',
