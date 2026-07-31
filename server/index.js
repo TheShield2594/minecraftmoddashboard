@@ -8,6 +8,12 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const app = express();
 app.use(express.json());
 
+const MAX_NOTE_LENGTH = 20000;
+
+app.get('/api/health', (req, res) => {
+  res.json({ ok: true });
+});
+
 app.get('/api/notes', (req, res) => {
   const rows = db.prepare('SELECT mod_id, text FROM notes').all();
   const notes = {};
@@ -18,6 +24,11 @@ app.get('/api/notes', (req, res) => {
 app.put('/api/notes/:modId', (req, res) => {
   const { modId } = req.params;
   const text = typeof req.body?.text === 'string' ? req.body.text : '';
+  // Count Unicode code points, not UTF-16 code units, so non-BMP characters
+  // (emoji, etc.) each count as one character against the limit.
+  if ([...text].length > MAX_NOTE_LENGTH) {
+    return res.status(400).json({ error: `note exceeds ${MAX_NOTE_LENGTH} characters` });
+  }
   if (text.trim() === '') {
     db.prepare('DELETE FROM notes WHERE mod_id = ?').run(modId);
   } else {
@@ -41,6 +52,9 @@ app.get('/api/progress', (req, res) => {
 app.put('/api/progress/:modId/:stepIndex', (req, res) => {
   const { modId, stepIndex } = req.params;
   const index = Number(stepIndex);
+  if (!Number.isInteger(index) || index < 0 || index > 1000) {
+    return res.status(400).json({ error: 'stepIndex must be an integer from 0 through 1000' });
+  }
   const done = Boolean(req.body?.done);
   if (!done) {
     db.prepare('DELETE FROM progress WHERE mod_id = ? AND step_index = ?').run(modId, index);
@@ -50,6 +64,13 @@ app.put('/api/progress/:modId/:stepIndex', (req, res) => {
     ).run(modId, index);
   }
   res.status(204).end();
+});
+
+// Unknown API routes get a JSON 404 instead of falling through to the SPA
+// fallback below, which would return index.html with a misleading 200. The
+// bare '/api' path needs its own pattern — '/api/*' alone doesn't match it.
+app.all(['/api', '/api/*'], (req, res) => {
+  res.status(404).json({ error: 'not found' });
 });
 
 // Static frontend build — skipped in dev, where Vite serves the SPA itself

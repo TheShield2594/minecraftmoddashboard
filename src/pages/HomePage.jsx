@@ -1,12 +1,11 @@
 import { useEffect, useMemo, useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
-import { MODS, countsByCategory } from '../data/mods';
+import { useSearchParams } from 'react-router-dom';
+import { MODS, countsByCategory, normalizeStep } from '../data/mods';
 import { fetchNotes, fetchProgress, progressSummary } from '../utils/storage';
 import CategoryChips from '../components/CategoryChips';
 import ModCard from '../components/ModCard';
 
 export default function HomePage() {
-  const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const query = searchParams.get('q') || '';
   const category = searchParams.get('category') || 'all';
@@ -35,6 +34,21 @@ export default function HomePage() {
       if (m.category.toLowerCase().includes(q)) return true;
       if (m.machines.some((x) => x.name.toLowerCase().includes(q))) return true;
       if (m.tips.some((t) => t.toLowerCase().includes(q))) return true;
+      if (m.recipes.some((r) => r.ingredients.toLowerCase().includes(q) || r.output.toLowerCase().includes(q)))
+        return true;
+      if (m.resourceChains.some((rc) => rc.resource.toLowerCase().includes(q) || rc.chain.toLowerCase().includes(q)))
+        return true;
+      if (
+        m.guides.some(
+          (g) =>
+            g.title.toLowerCase().includes(q) ||
+            g.steps.some((s) => {
+              const step = normalizeStep(s);
+              return step.title.toLowerCase().includes(q) || step.detail.toLowerCase().includes(q);
+            })
+        )
+      )
+        return true;
       return false;
     });
   }, [category, q]);
@@ -45,7 +59,7 @@ export default function HomePage() {
     <div>
       <div className="home-heading">
         <h1>All Mods</h1>
-        <div className="result-count">
+        <div className="result-count" role="status">
           SHOWING {filteredMods.length} / {MODS.length}
         </div>
       </div>
@@ -60,13 +74,12 @@ export default function HomePage() {
               mod={mod}
               hasNote={Boolean(notes[mod.id]?.trim())}
               progress={progressSummary(mod, progress)}
-              onClick={() => navigate(`/mod/${mod.id}`)}
             />
           ))}
         </div>
       ) : (
         <div className="no-results">
-          <div>NO MODS MATCH "{query}"</div>
+          <div>{q ? `NO MODS MATCH "${query}"` : 'NO MODS IN THIS CATEGORY'}</div>
         </div>
       )}
     </div>
