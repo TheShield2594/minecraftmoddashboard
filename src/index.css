@@ -493,13 +493,88 @@ a:hover {
   align-items: flex-start;
 }
 
-.mod-nav {
-  flex: 0 0 200px;
+.mod-side {
+  flex: 0 0 220px;
   position: sticky;
   top: 90px;
   display: flex;
   flex-direction: column;
+  gap: 20px;
+  max-height: calc(100vh - 110px);
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+
+.mod-nav {
+  display: flex;
+  flex-direction: column;
   gap: 4px;
+}
+
+/* Sidebar mod switcher */
+
+.mod-switcher {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  border-top: 1px solid oklch(0.28 0.02 260);
+  padding-top: 16px;
+}
+
+.mod-switcher-title {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: oklch(0.55 0.02 260);
+  padding: 0 12px 8px;
+}
+
+.mod-switcher-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  text-decoration: none;
+  color: oklch(0.7 0.015 260);
+  font-size: 12.5px;
+  min-width: 0;
+}
+
+.mod-switcher-link:hover {
+  background: oklch(0.24 0.016 260);
+  color: oklch(0.9 0.01 260);
+}
+
+.mod-switcher-link.current {
+  font-weight: 700;
+}
+
+.mod-switcher-icon {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 700;
+  font-size: 10.5px;
+  border: 1px solid;
+}
+
+.mod-switcher-name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mod-switcher-progress {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  flex-shrink: 0;
 }
 
 .mod-nav-link {
@@ -608,11 +683,30 @@ a:hover {
   padding-top: 3px;
   color: oklch(0.85 0.01 260);
   transition: color 0.15s;
+  min-width: 0;
+}
+
+.step-title {
+  font-weight: 600;
+}
+
+.step-detail {
+  font-size: 13px;
+  line-height: 1.55;
+  color: oklch(0.68 0.015 260);
+  margin-top: 2px;
 }
 
 .progression-step.done .progression-text {
   color: oklch(0.55 0.01 260);
+}
+
+.progression-step.done .step-title {
   text-decoration: line-through;
+}
+
+.progression-step.done .step-detail {
+  color: oklch(0.5 0.01 260);
 }
 
 .panel-block {
@@ -765,10 +859,20 @@ a:hover {
     padding: 24px 20px 0;
   }
 
-  .mod-nav {
+  .mod-side {
     position: static;
+    flex-basis: 100%;
+    max-height: none;
+    overflow-y: visible;
+  }
+
+  .mod-nav {
     flex-direction: row;
     flex-wrap: wrap;
-    flex-basis: 100%;
+  }
+
+  /* On small screens the home grid handles mod switching */
+  .mod-switcher {
+    display: none;
   }
 }

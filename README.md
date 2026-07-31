@@ -38,6 +38,8 @@ Without Docker: `npm run build && npm start` (serves on `PORT`, default 8080; se
 
 All mod content lives in [`src/data/mods.js`](src/data/mods.js) — add an entry to the `MODS` array and the card, detail page, and category chip all appear automatically. The expected shape of an entry is documented at the top of that file.
 
+Each mod has one or more **guides** — named, checkable step-by-step walkthroughs (e.g. a core progression plus a focused build guide like "Build a Coke Oven"). Steps can be plain strings or `{ title, detail }` objects; keep the first guide's id as `progression` so previously saved checkbox progress carries over.
+
 ## API
 
 | Method | Path | Description |

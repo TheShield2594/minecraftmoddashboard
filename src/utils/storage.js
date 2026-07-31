@@ -32,16 +32,29 @@ export function saveNote(modId, text) {
   return putJSON(`/api/notes/${encodeURIComponent(modId)}`, { text });
 }
 
-// progress shape: { [modId]: { [stepIndex]: true } }
+// progress shape: { [guideKey]: { [stepIndex]: true } }
 export function fetchProgress() {
   return getJSON('/api/progress', {});
 }
 
-export function saveProgressStep(modId, index, done) {
-  return putJSON(`/api/progress/${encodeURIComponent(modId)}/${index}`, { done });
+// Storage key for one guide's progress. The default guide ('progression')
+// uses the bare mod id so progress saved before guides existed still counts.
+export function guideKey(modId, guideId) {
+  return guideId === 'progression' ? modId : `${modId}/${guideId}`;
 }
 
+export function saveProgressStep(modId, guideId, index, done) {
+  return putJSON(`/api/progress/${encodeURIComponent(guideKey(modId, guideId))}/${index}`, { done });
+}
+
+// Totals across every guide the mod has.
 export function progressSummary(mod, progress) {
-  const done = Object.values(progress[mod.id] || {}).filter(Boolean).length;
-  return { done, total: mod.progression.length };
+  let done = 0;
+  let total = 0;
+  for (const guide of mod.guides) {
+    total += guide.steps.length;
+    const saved = progress[guideKey(mod.id, guide.id)] || {};
+    for (let i = 0; i < guide.steps.length; i++) if (saved[i]) done++;
+  }
+  return { done, total };
 }

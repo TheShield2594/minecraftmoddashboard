@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Navigate, useParams } from 'react-router-dom';
 import { MODS } from '../data/mods';
-import { fetchNotes, fetchProgress, saveNote, saveProgressStep } from '../utils/storage';
+import { fetchNotes, fetchProgress, guideKey, saveNote, saveProgressStep } from '../utils/storage';
 import ModDetail from '../components/ModDetail';
 
 const NOTE_SAVE_DEBOUNCE_MS = 500;
@@ -11,7 +11,9 @@ export default function ModPage() {
   const mod = MODS.find((m) => m.id === modId);
   const [note, setNote] = useState('');
   const [noteStatus, setNoteStatus] = useState('idle'); // idle | saving | saved | error
-  const [steps, setSteps] = useState({});
+  // Full progress map, keyed by guideKey — the current mod's checklists and
+  // the sidebar mod switcher's fractions both read from it.
+  const [progress, setProgress] = useState({});
   const saveTimer = useRef(null);
   const pendingSave = useRef(null); // { modId, text } while a debounced save is queued
   const noteDirty = useRef(false);
@@ -25,7 +27,7 @@ export default function ModPage() {
       // Don't clobber text the user already started typing while we fetched
       if (!noteDirty.current) setNote(notes[mod.id] || '');
     });
-    fetchProgress().then((progress) => setSteps(progress[mod.id] || {}));
+    fetchProgress().then(setProgress);
     return () => {
       clearTimeout(saveTimer.current);
       // Flush a still-debounced edit instead of dropping it on navigation
@@ -52,11 +54,12 @@ export default function ModPage() {
     }, NOTE_SAVE_DEBOUNCE_MS);
   }
 
-  function toggleStep(index) {
-    setSteps((prev) => {
-      const done = !prev[index];
-      saveProgressStep(mod.id, index, done);
-      return { ...prev, [index]: done };
+  function toggleStep(guideId, index) {
+    const key = guideKey(mod.id, guideId);
+    setProgress((prev) => {
+      const done = !prev[key]?.[index];
+      saveProgressStep(mod.id, guideId, index, done);
+      return { ...prev, [key]: { ...prev[key], [index]: done } };
     });
   }
 
@@ -66,7 +69,7 @@ export default function ModPage() {
       note={note}
       noteStatus={noteStatus}
       onNoteChange={updateNote}
-      steps={steps}
+      progress={progress}
       onToggleStep={toggleStep}
     />
   );

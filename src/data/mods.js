@@ -63,6 +63,12 @@ export function catLabel(key) {
   return CAT_LABELS[key] || key.charAt(0).toUpperCase() + key.slice(1);
 }
 
+// Guide steps may be authored as plain strings (title only) or objects with
+// { title, detail } — normalize to the object form for rendering.
+export function normalizeStep(step) {
+  return typeof step === 'string' ? { title: step, detail: '' } : { detail: '', ...step };
+}
+
 // ---------------------------------------------------------------------------
 // Mod data. Add your own mods here — this is the only file you need to touch
 // to grow the codex. Shape of one entry:
@@ -76,7 +82,17 @@ export function catLabel(key) {
 //   description: 'One or two sentences shown on the card and detail hero.',
 //   machines: [{ name: '...', desc: '...' }, ...],
 //   recipes: [{ ingredients: '...', output: '...' }, ...],
-//   progression: ['Step 1 text', 'Step 2 text', ...],   // ordered, checkable
+//   guides: [                          // one or more step-by-step guides,
+//     {                                //  each with its own checkable steps
+//       id: 'progression',             // stable key for saved progress; keep
+//                                      //  the first guide's id 'progression'
+//       title: 'Core Progression',
+//       steps: [
+//         { title: 'Short step name', detail: 'Longer how/why text.' },
+//         'A plain string also works (title only).',
+//       ],
+//     },
+//   ],
 //   resourceChains: [{ resource: '...', chain: '...' }, ...],
 //   tips: ['...', '...'],
 // }
@@ -98,12 +114,64 @@ export const MODS = [
       { ingredients: '1x Steel Ingot, Mold: Plate', output: 'Steel Plate' },
       { ingredients: '6x Steel Ingot, 4x Electrum', output: "Engineer's Hammer" },
     ],
-    progression: [
-      "Craft an Engineer's Hammer — required to assemble every multiblock.",
-      'Build a Coke Oven to produce Coal Coke and Creosote Oil.',
-      'Assemble the Blast Furnace multiblock to unlock Steel.',
-      'Set up a Metal Press for Plates, Rods, and Gears.',
-      'Wire power from a Kinetic Dynamo or Diesel Generator to your base.',
+    guides: [
+      {
+        id: 'progression',
+        title: 'Core Progression',
+        steps: [
+          {
+            title: "Craft an Engineer's Hammer",
+            detail:
+              'The Hammer is required to form every IE multiblock — you right-click the finished structure with it to assemble the machine. Keep one on your hotbar for the whole playthrough.',
+          },
+          {
+            title: 'Build a Coke Oven',
+            detail:
+              'The Coke Oven slowly converts Coal into Coal Coke (a better furnace fuel and the key Blast Furnace ingredient) and produces Creosote Oil as a byproduct for Treated Wood.',
+          },
+          {
+            title: 'Assemble the Blast Furnace',
+            detail:
+              'The Crude Blast Furnace multiblock smelts Iron with Coal Coke into Steel — the gateway material for nearly every IE machine that follows.',
+          },
+          {
+            title: 'Set up a Metal Press',
+            detail:
+              'With swappable molds, the Metal Press stamps ingots into Plates, Rods, and Gears. Batch-produce plates early; almost every recipe wants them.',
+          },
+          {
+            title: 'Wire up base power',
+            detail:
+              "Start with a Kinetic Dynamo (windmill/water wheel) or jump to a Diesel Generator, then run wire coils to your machines. Use the Engineer's Wire Cutters to manage connections.",
+          },
+        ],
+      },
+      {
+        id: 'coke-oven',
+        title: 'Build a Coke Oven',
+        steps: [
+          {
+            title: 'Craft 27 Coke Oven Bricks',
+            detail: 'Coke Oven Bricks are crafted from Clay, Bricks, and Sandstone — cheap early-game materials. You need 27 for one oven.',
+          },
+          {
+            title: 'Place a solid 3×3×3 cube',
+            detail: 'Stack the bricks into a full 3×3×3 cube (no hollow center). Orientation does not matter yet.',
+          },
+          {
+            title: "Form the multiblock with the Engineer's Hammer",
+            detail: 'Right-click the center block of any face with the Hammer. The structure visibly changes and gains a door — it is now one working machine.',
+          },
+          {
+            title: 'Load Coal and wait',
+            detail: 'Insert Coal through the interface. Each piece slowly bakes into Coal Coke, with Creosote Oil accumulating in the internal tank.',
+          },
+          {
+            title: 'Drain the Creosote and automate',
+            detail: 'Pull Creosote out with fluid containers or pipes and use it with Wooden Planks to make Treated Wood. Hopper Coal in and Coke out to keep it running unattended.',
+          },
+        ],
+      },
     ],
     resourceChains: [
       { resource: 'Iron', chain: 'Raw Iron → Crusher (optional) → Blast Furnace → Steel Ingot → Metal Press → Steel Plate' },
@@ -130,12 +198,64 @@ export const MODS = [
       { ingredients: '4x Certus Quartz, 4x Redstone', output: 'ME Cable (16x)' },
       { ingredients: '1x Logic Processor, 1x Engineering Processor', output: 'ME Drive' },
     ],
-    progression: [
-      'Mine Certus Quartz and craft basic ME Cable.',
-      'Build a small Controller network with a Drive and Terminal.',
-      'Set up an Inscriber line for Processors (Logic/Calc/Engineering).',
-      'Add Storage Buses on external chests to absorb existing storage.',
-      'Automate crafting with Molecular Assemblers and Pattern Providers.',
+    guides: [
+      {
+        id: 'progression',
+        title: 'Core Progression',
+        steps: [
+          {
+            title: 'Mine Certus Quartz and craft ME Cable',
+            detail:
+              'Certus Quartz is the foundational AE2 resource. Charge it in a Charger, combine with Nether Quartz and Redstone for Fluix, and craft your first run of Glass Cable.',
+          },
+          {
+            title: 'Build a starter network',
+            detail:
+              'A Controller, an ME Drive with a 1k Storage Cell, and an ME Terminal on a short cable run gives you searchable digital storage. Power it with an Energy Acceptor from any FE source.',
+          },
+          {
+            title: 'Set up an Inscriber line',
+            detail:
+              'Inscribers stamp Logic, Calculation, and Engineering Processors from Gold, Certus, and Diamond using their Presses (found in meteorites). Everything advanced needs processors — automate them early.',
+          },
+          {
+            title: 'Absorb your old storage',
+            detail:
+              'Put Storage Buses on your existing chests and drawers to expose their contents through the ME Terminal without moving a single item.',
+          },
+          {
+            title: 'Automate crafting',
+            detail:
+              'Encode Patterns, put them in Pattern Providers feeding Molecular Assemblers, and the network crafts on demand — request 200 cable and walk away.',
+          },
+        ],
+      },
+      {
+        id: 'autocrafting',
+        title: 'Set Up Autocrafting',
+        steps: [
+          {
+            title: 'Craft a Pattern Encoding Terminal',
+            detail: 'Upgrade a standard terminal so you can turn Blank Patterns into encoded crafting patterns for any recipe.',
+          },
+          {
+            title: 'Encode your first Patterns',
+            detail: 'Lay out the recipe in the encoding grid and encode it onto a Blank Pattern — start with things you craft constantly, like cables and processors.',
+          },
+          {
+            title: 'Place Pattern Providers with Molecular Assemblers',
+            detail: 'A Pattern Provider holding your patterns, with Molecular Assemblers touching each face, is the basic autocrafting engine. One provider can drive several assemblers.',
+          },
+          {
+            title: 'Add a Crafting CPU',
+            detail: 'Build a small multiblock of Crafting Storage (and Co-Processing Units for parallelism). The CPU plans and buffers multi-step jobs.',
+          },
+          {
+            title: 'Request a craft from the terminal',
+            detail: 'Search the item, click it, set a quantity, and watch the network resolve the whole dependency tree — including intermediate steps — on its own.',
+          },
+        ],
+      },
     ],
     resourceChains: [
       { resource: 'Certus Quartz', chain: 'Certus Quartz Ore → Charged (Charger) → Cable/Processor components' },
@@ -162,12 +282,60 @@ export const MODS = [
       { ingredients: '2x Andesite Alloy, 1x Water Wheel base', output: 'Water Wheel' },
       { ingredients: '1x Iron Ingot (via Mechanical Press)', output: 'Iron Sheet' },
     ],
-    progression: [
-      'Build a Water Wheel or Windmill for early rotational power.',
-      'Chain Shafts and Cogwheels to distribute power across your base.',
-      'Add a Millstone and Mechanical Press for basic processing.',
-      'Build a Mechanical Crafter line for automated crafting.',
-      'Graduate to Trains once you have Tracks and a Schedule.',
+    guides: [
+      {
+        id: 'progression',
+        title: 'Core Progression',
+        steps: [
+          {
+            title: 'Build a Water Wheel or Windmill',
+            detail:
+              'Early rotational power is free: a Water Wheel on flowing water, or a Windmill Bearing with wool/sail blocks. Windmills scale with sail count if you need more stress capacity.',
+          },
+          {
+            title: 'Distribute power with Shafts and Cogwheels',
+            detail:
+              'Chain Shafts for straight runs, Cogwheels to turn corners and change speed — a large cog driving a small one doubles speed at the cost of doubled stress.',
+          },
+          {
+            title: 'Add a Millstone and Mechanical Press',
+            detail:
+              'These two unlock basic processing: grinding ores and grains, and pressing ingots into Sheets that Create recipes use everywhere.',
+          },
+          {
+            title: 'Build a Mechanical Crafter line',
+            detail:
+              'Brass-tier Mechanical Crafters arranged in a grid automate shaped recipes. They need Brass, so set up a Mixer for Zinc + Copper first.',
+          },
+          {
+            title: 'Graduate to Trains',
+            detail:
+              'Lay Track, build a Station, assemble a locomotive with a Train Controls block, and give it a Schedule — trains can haul players, items, and fluids between bases.',
+          },
+        ],
+      },
+      {
+        id: 'ore-processing',
+        title: 'Automate Ore Processing',
+        steps: [
+          {
+            title: 'Build Crushing Wheels',
+            detail: 'A pair of counter-rotating Crushing Wheels crushes raw ore into Crushed Ore — the entry point for doubling your ore yield.',
+          },
+          {
+            title: 'Wash Crushed Ore with an Encased Fan',
+            detail: 'An Encased Fan blowing through water ("bulk washing") turns Crushed Ore into metal nuggets with a bonus chance — free extra ingots.',
+          },
+          {
+            title: 'Belt the stages together',
+            detail: 'Feed ore in with Mechanical Belts and Chutes: hopper → Crushing Wheels → belt through the washing zone → collection.',
+          },
+          {
+            title: 'Smelt and store the output',
+            detail: 'Route washed nuggets into furnaces (or a Bulk Blasting setup with a lava fan) and send finished ingots to your storage system.',
+          },
+        ],
+      },
     ],
     resourceChains: [
       { resource: 'Andesite Alloy', chain: 'Andesite + Iron Nugget (or Zinc) → Andesite Alloy → Shafts/Cogwheels' },
@@ -194,12 +362,37 @@ export const MODS = [
       { ingredients: '3x Vegetables + 1x Broth', output: 'Vegetable Soup (Cooking Pot)' },
       { ingredients: '1x Wheat Dough, Cutting Board', output: 'Pasta / Noodle base' },
     ],
-    progression: [
-      'Plant new crops (Tomato, Onion, Cabbage, Rice) early on.',
-      'Craft a Cutting Board for prep steps like slicing meat.',
-      'Add a Cooking Pot for multi-ingredient meals with buffs.',
-      'Set up a Smoker Extension for faster meat processing.',
-      'Cook higher-tier meals for longer, stronger food buffs.',
+    guides: [
+      {
+        id: 'progression',
+        title: 'Core Progression',
+        steps: [
+          {
+            title: 'Plant the new crops early',
+            detail:
+              'Tomatoes, Onions, Cabbage, and Rice feed most recipes. Get seeds in the ground on day one — Rice grows in water like sugar cane.',
+          },
+          {
+            title: 'Craft a Cutting Board',
+            detail:
+              'With a knife, the Cutting Board handles prep work: slicing meat into portions, making dough, and splitting ingredients for better yields than raw crafting.',
+          },
+          {
+            title: 'Add a Cooking Pot',
+            detail:
+              'Place it over a heat source (campfire or stove) and combine multiple ingredients into stews and meals that grant nourishment buffs plain food never gives.',
+          },
+          {
+            title: 'Set up faster meat processing',
+            detail: 'A dedicated smoking/cooking station keeps raw meat moving — cook in bulk so hearty meal ingredients are always stocked.',
+          },
+          {
+            title: 'Cook higher-tier meals',
+            detail:
+              'Late recipes with more ingredients give longer, stronger buffs. Keep a stack of top-tier meals for mining trips and boss fights.',
+          },
+        ],
+      },
     ],
     resourceChains: [
       { resource: 'Wheat Dough', chain: 'Wheat + Water (Cutting Board) → Wheat Dough → Pasta/Pie Crust' },
@@ -228,13 +421,43 @@ export const MODS = [
       { ingredients: 'Pickaxe Head Blueprint, 2x Iron Ingot', output: 'Iron Pickaxe Head' },
       { ingredients: 'Iron Pickaxe Head, Wooden Tool Rod', output: 'Assembled Iron Pickaxe (stats set by the parts used)' },
     ],
-    progression: [
-      'Open the starter Blueprint Package for Tool Rod, Pickaxe, Shovel, Axe, Hoe and Sword blueprints.',
-      'Craft rods and heads from basic materials like wood, stone, and iron, then assemble your first set of tools.',
-      'Build a Salvager so you can reclaim materials any time you want to rebuild a tool with better parts.',
-      'Set up a Material Grader to push key materials toward higher quality grades for stronger stat bonuses.',
-      "Seek out Silent Gear's own ores and metals, such as Crimson Iron and Azure Silver, for higher-tier parts.",
-      "Mix materials across a tool's head, rod, and extras to balance harvest speed, durability, and special traits.",
+    guides: [
+      {
+        id: 'progression',
+        title: 'Core Progression',
+        steps: [
+          {
+            title: 'Open the starter Blueprint Package',
+            detail:
+              'You spawn with a Blueprint Package containing Tool Rod, Pickaxe, Shovel, Axe, Hoe, and Sword blueprints — the templates every part is crafted through.',
+          },
+          {
+            title: 'Assemble your first tool set',
+            detail:
+              'Craft rods and heads from wood, stone, or iron using the blueprints, then combine a head with a rod on any crafting grid. The stats come entirely from the materials you picked.',
+          },
+          {
+            title: 'Build a Salvager',
+            detail:
+              'The Salvager breaks finished tools back into their parts and materials, so upgrading to a better head never wastes the old investment.',
+          },
+          {
+            title: 'Set up a Material Grader',
+            detail:
+              'Grading pushes material quality from E toward MAX, and higher grades roll stronger stat bonuses. Grade before you build anything expensive.',
+          },
+          {
+            title: "Mine Silent Gear's own metals",
+            detail:
+              'Crimson Iron (Nether) and Azure Silver (End) unlock higher-tier parts with traits vanilla materials cannot match.',
+          },
+          {
+            title: 'Mix materials for hybrid stats',
+            detail:
+              "A tool's head, rod, and extras each contribute stats and traits — pair a hard-hitting head with a lightweight rod to balance speed, durability, and special effects.",
+          },
+        ],
+      },
     ],
     resourceChains: [
       { resource: 'Iron', chain: 'Iron Ore → Furnace → Iron Ingot → Blueprint + Ingots → Gear Part (Head/Blade) → Assemble with Rod → Finished Tool' },
@@ -263,13 +486,43 @@ export const MODS = [
       { ingredients: 'Materials dropped by Maledictus', output: 'Twin Annihilator Maces, the Soul Render halberd, or the Cursed Bow' },
       { ingredients: 'Materials dropped by the Harbinger', output: 'Meat Shredder, Laser Gatling, or Wither Assault Shoulder Weapon' },
     ],
-    progression: [
-      "Gear up with strong late-game vanilla combat gear before seeking out Cataclysm's bosses — most hit far harder than vanilla mobs.",
-      'Track down and defeat the Netherite Monstrosity in the Nether for an early boost to your combat gear.',
-      'Summon and defeat the Harbinger by placing a Nether Star in its chest cavity to earn weapons like the Meat Shredder and Laser Gatling.',
-      'Challenge Maledictus for the Annihilator maces, the Soul Render halberd, and the Cursed Bow.',
-      "Take on Ignis, the mod's hardest fight, for Ignitium ingots and top-tier flame-themed gear.",
-      "Forge each boss's drops into matching armor and weapon sets before pushing on to later bosses like Scylla, Leviathan, and the Ancient Remnant.",
+    guides: [
+      {
+        id: 'progression',
+        title: 'Boss Progression',
+        steps: [
+          {
+            title: 'Gear up before your first boss',
+            detail:
+              "Most Cataclysm bosses are balanced around Netherite-tier loadouts. Bring enchanted armor, golden apples, and potions — they hit far harder than vanilla mobs.",
+          },
+          {
+            title: 'Defeat the Netherite Monstrosity',
+            detail:
+              'Found in the Nether, it hurls lava and enrages below a third health. Its drops give an early boost to your combat gear.',
+          },
+          {
+            title: 'Awaken and defeat the Harbinger',
+            detail:
+              'Insert a Nether Star into its chest cavity to start the fight. It attacks with missiles, lasers, and charges; winning earns the Meat Shredder and Laser Gatling.',
+          },
+          {
+            title: 'Challenge Maledictus',
+            detail:
+              'A highly mobile, multi-phase armored ghost. Its materials forge the Annihilator maces, the Soul Render halberd, and the Cursed Bow.',
+          },
+          {
+            title: 'Take on Ignis',
+            detail:
+              "Widely considered the mod's hardest fight — a colossal flame-wreathed swordsman. Victory yields Ignitium Ingots for top-tier gear.",
+          },
+          {
+            title: 'Forge boss gear between fights',
+            detail:
+              "Turn each boss's drops into their matching armor and weapon sets before moving on to later bosses like Scylla, the Leviathan, and the Ancient Remnant.",
+          },
+        ],
+      },
     ],
     resourceChains: [
       { resource: 'Ignitium', chain: 'Defeat Ignis → Ignitium Ingots → Forge → Ignitium Armor / Incinerator / Bulwark of the Flame' },
@@ -298,13 +551,37 @@ export const MODS = [
       { ingredients: '4x Iron Ingot, 1x Leather Backpack', output: 'Upgrade Base (used to craft most upgrades)' },
       { ingredients: '1x Upgrade Base, 1x Hopper', output: 'Pickup Upgrade' },
     ],
-    progression: [
-      'Craft a basic Leather Backpack from a Chest and Leather for extra portable storage.',
-      'Work up through the tiers — Iron, Gold, Diamond, Netherite — for more slots and more upgrade capacity.',
-      'Add a Pickup Upgrade so drops from mining, farming, or fighting get vacuumed straight into the backpack.',
-      'Add a Tank Upgrade to haul fluids alongside items without carrying separate buckets.',
-      'Slot in Stack Upgrades to multiply how much each backpack slot can hold.',
-      'Once you have several specialized backpacks, use an Inception Upgrade to nest them all inside one master backpack.',
+    guides: [
+      {
+        id: 'progression',
+        title: 'Core Progression',
+        steps: [
+          {
+            title: 'Craft a Leather Backpack',
+            detail: 'Four Leather, four String, and a Chest gets you portable storage that keeps its contents when you die (config-dependent) and never clutters your inventory.',
+          },
+          {
+            title: 'Upgrade through the tiers',
+            detail: 'Iron, Gold, Diamond, and Netherite tiers each add inventory slots and upgrade slots. Upgrading in-place keeps everything inside.',
+          },
+          {
+            title: 'Add a Pickup Upgrade',
+            detail: 'Drops from mining, farming, or fighting get vacuumed straight into the backpack. Pair it with filters to keep junk out of your main inventory.',
+          },
+          {
+            title: 'Add a Tank Upgrade',
+            detail: 'Converts slots into fluid storage — haul lava, water, or modded fluids without juggling buckets.',
+          },
+          {
+            title: 'Slot in Stack Upgrades',
+            detail: 'Each Stack Upgrade multiplies per-slot capacity, and the multiplier applies to Tank Upgrades too — install before filling.',
+          },
+          {
+            title: 'Nest with an Inception Upgrade',
+            detail: 'Store specialized backpacks inside one master backpack and access them all without unpacking anything.',
+          },
+        ],
+      },
     ],
     resourceChains: [
       { resource: 'Backpack Tiers', chain: 'Leather Backpack → Iron Backpack → Gold Backpack → Diamond Backpack → Netherite Backpack (more slots and upgrade slots at each step)' },
@@ -333,13 +610,41 @@ export const MODS = [
       { ingredients: '4x Planks, 1x 1x1 Drawer', output: '2x2 Drawer' },
       { ingredients: '8x Sticks, 1x Any Drawer', output: 'Upgrade Template (used to craft Storage, Void, and Redstone Upgrades)' },
     ],
-    progression: [
-      'Craft a handful of 1x1 or 2x2 Drawers from planks and a chest to start consolidating stacks of ores, blocks, and crops.',
-      'Place a Drawer Controller nearby and connect your drawers to browse and insert into the whole network from one block.',
-      'Use Trim to extend drawer walls and link distant drawers back to the controller without adding unnecessary storage.',
-      'Add Storage Upgrades to individual drawers to multiply how many stacks each slot can hold.',
-      'Build Compacting Drawers for ore-to-ingot-to-block chains so you never manually compress or decompress materials again.',
-      'Add Redstone or Void Upgrades where you need fill-level signals or automatic overflow disposal.',
+    guides: [
+      {
+        id: 'progression',
+        title: 'Core Progression',
+        steps: [
+          {
+            title: 'Craft your first drawers',
+            detail:
+              'A handful of 1x1 or 2x2 Drawers from planks and a chest starts consolidating bulk stacks — ores, cobble, crops — with the count visible on the face.',
+          },
+          {
+            title: 'Place a Drawer Controller',
+            detail:
+              'Connect your drawers to a Controller and you can insert into and browse the whole wall from one block — throw a full inventory at it and everything sorts itself.',
+          },
+          {
+            title: 'Extend with Trim',
+            detail:
+              'Trim is a cheap connector that chains distant drawers back to the Controller (12-block reach by default) without wasting slots on storage you do not need.',
+          },
+          {
+            title: 'Add Storage Upgrades',
+            detail: 'Upgrades multiply how many stacks each slot holds — put big upgrades on your highest-volume drawers (cobble, gravel, wheat).',
+          },
+          {
+            title: 'Build Compacting Drawers',
+            detail:
+              'One Compacting Drawer stores nuggets, ingots, and blocks as a single pool — insert any form, withdraw any form, no manual compression ever again.',
+          },
+          {
+            title: 'Finish with Redstone and Void Upgrades',
+            detail: 'Redstone Upgrades emit fill-level signals for automation; Void Upgrades delete overflow so infinite farms never back up.',
+          },
+        ],
+      },
     ],
     resourceChains: [
       { resource: 'Cobblestone / Ores', chain: 'Mining → dumped into linked Drawers via Controller → auto-sorted by item type → withdrawn in any quantity from the drawer face' },
@@ -367,13 +672,37 @@ export const MODS = [
       { ingredients: '1x Copper Ingot (via Rolling Mill)', output: 'Copper Wire' },
       { ingredients: 'Iron Rod, Brass Ingot, Gunpowder', output: 'Musket' },
     ],
-    progression: [
-      "Get Create's basic rotational power running (Water Wheel or Windmill) and stock up on Brass.",
-      'Build a Rolling Mill to turn spare ingots into Rods and Wires.',
-      'Place small and large Connectors and run Wires to link machines and storage across your base.',
-      'Add an Electric Motor or Alternator to bridge Create power with any FE-based tech mods in your pack.',
-      'Craft a Musket for ranged combat once you have Iron Rods and Brass to spare.',
-      'Use Redstone Relays and Accumulators for larger, logic-gated power networks.',
+    guides: [
+      {
+        id: 'progression',
+        title: 'Core Progression',
+        steps: [
+          {
+            title: 'Get Create power running first',
+            detail: "This addon builds on base Create — you need working rotational power (Water Wheel or Windmill) and a Brass supply before its machines are useful.",
+          },
+          {
+            title: 'Build a Rolling Mill',
+            detail: 'The Rolling Mill draws spare ingots into Rods and Wires — the two components nearly everything else in the addon consumes.',
+          },
+          {
+            title: 'Run wiring with Connectors',
+            detail: 'Small Connectors carry low-current signals, Large Connectors carry high-current FE. String Wires between them to link machines and storage across the base.',
+          },
+          {
+            title: 'Bridge Create and FE power',
+            detail: 'An Electric Motor turns FE into rotation; an Alternator turns rotation into FE. Together they let Create contraptions and FE tech mods share one power grid.',
+          },
+          {
+            title: 'Craft a Musket',
+            detail: 'With Iron Rods and Brass to spare, the Musket gives you a hard-hitting ranged option with craftable ammunition.',
+          },
+          {
+            title: 'Scale up with Relays and Accumulators',
+            detail: 'Redstone Relays gate power flow with logic, and Accumulators buffer FE for burst loads — the building blocks of a larger network.',
+          },
+        ],
+      },
     ],
     resourceChains: [
       { resource: 'Wire', chain: 'Iron/Copper Ingot → Rolling Mill → Rod/Wire → Connectors → powered machines' },
@@ -401,13 +730,37 @@ export const MODS = [
       { ingredients: 'Planks (any wood) + Iron Nugget', output: 'Track (matching wood style)' },
       { ingredients: '1x Brass Ingot, 1x Copper Ingot', output: 'Whistle' },
     ],
-    progression: [
-      "Finish Create's early rotational power and stock up on Andesite Alloy and Brass.",
-      'Lay Track in the wood style that matches your build and set up a Station.',
-      'Build a Boiler fed by Water and a fuel source (coal, etc.) to power a Steam Locomotive.',
-      'Attach Couplers and Buffers to link additional cars into a full multi-car train.',
-      'Place Signal Blocks and Semaphores at junctions so trains wait instead of colliding.',
-      'Give the locomotive a Whistle and a Schedule to automate routes between stations.',
+    guides: [
+      {
+        id: 'progression',
+        title: 'Core Progression',
+        steps: [
+          {
+            title: 'Finish early Create first',
+            detail: "Trains sit at Create's Brass tier — have rotational power running and stockpile Andesite Alloy and Brass before laying rail.",
+          },
+          {
+            title: 'Lay Track and build a Station',
+            detail: 'Pick the wood-styled Track matching your build (all variants are functionally identical) and place a Station block where trains will assemble and stop.',
+          },
+          {
+            title: 'Build a steam Boiler',
+            detail: 'Feed it Water and fuel (coal or charcoal) to raise steam pressure for the Steam Engine driving your locomotive — bigger trains need bigger boilers.',
+          },
+          {
+            title: 'Couple up more cars',
+            detail: 'Couplers link additional cars into one multi-car train; Buffers cap the ends and cushion collisions.',
+          },
+          {
+            title: 'Signal your junctions',
+            detail: 'Signal Blocks mark track sections as occupied so trains stop at a red instead of colliding — place one before every junction.',
+          },
+          {
+            title: 'Automate routes with a Schedule',
+            detail: 'Give the locomotive a Whistle and drop a Schedule into the controls — it will run station-to-station routes, wait conditions and all, unattended.',
+          },
+        ],
+      },
     ],
     resourceChains: [
       { resource: 'Steam Power', chain: "Water + fuel (coal/charcoal) → heated Boiler → steam pressure → drives the Locomotive's Steam Engine" },
@@ -435,13 +788,37 @@ export const MODS = [
       { ingredients: '6x Planks, 2x Slab (same wood)', output: 'Table' },
       { ingredients: '5x Planks, 1x Trapdoor', output: 'Cabinet' },
     ],
-    progression: [
-      'Gather Planks in your preferred wood type — nearly every Handcrafted item is available in all wood variants.',
-      'Craft basic seating and Tables to furnish a dining area.',
-      'Add storage furniture like Cabinets and Drawers to declutter chests-only storage.',
-      'Use Cushions and Sheets to dye and re-color couches and beds without recrafting them.',
-      'Fill out rooms with small details — Shelves, Pots, Clocks, and Mailboxes.',
-      'Mix wood types and styles (medieval, steampunk, fantasy) to theme different rooms or builds.',
+    guides: [
+      {
+        id: 'progression',
+        title: 'Furnishing Guide',
+        steps: [
+          {
+            title: 'Gather Planks in your wood of choice',
+            detail: 'Nearly every Handcrafted piece exists in all wood variants, so furniture can match an existing build exactly — stock the wood before you start.',
+          },
+          {
+            title: 'Furnish a dining area',
+            detail: 'Chairs, Benches, and Tables are the cheapest pieces and immediately make a build feel lived-in. Chairs are actually sit-able.',
+          },
+          {
+            title: 'Add storage furniture',
+            detail: 'Cabinets and Drawers are real containers styled to their wood type — declutter a chests-only room without losing capacity.',
+          },
+          {
+            title: 'Dye with Cushions and Sheets',
+            detail: 'Re-color couches and beds by swapping Cushions and Sheets — no breaking and recrafting required.',
+          },
+          {
+            title: 'Detail the rooms',
+            detail: 'Shelves, Pots, Clocks, and Mailboxes fill the small visual gaps that make interiors read as finished.',
+          },
+          {
+            title: 'Theme rooms with mixed styles',
+            detail: 'Mixing wood types and style sets (medieval, steampunk, fantasy) gives each room or build its own identity.',
+          },
+        ],
+      },
     ],
     resourceChains: [
       { resource: 'Furniture Set', chain: "Planks (any wood) → Handcrafted recipes → matching Chair/Table/Cabinet/Shelf set in that wood's color" },
@@ -469,13 +846,37 @@ export const MODS = [
       { ingredients: '8 Gold Ingots', output: 'Wedding Ring (gift at 100 hearts to marry)' },
       { ingredients: 'Married spouse + assigned chore (farming, lumber, etc.)', output: 'A working spouse who contributes resources' },
     ],
-    progression: [
-      'Talk to and gift villagers to build hearts with them.',
-      'Craft an Engagement Ring and gift it at 50 hearts to become engaged.',
-      'Reach 100 hearts, then craft and gift a Wedding Ring to marry.',
-      'Move in together and have children, who start out as babies.',
-      'Assign children chores like farming or lumberjacking as they grow into adults.',
-      'Recruit or rely on Guards to protect your growing family and village.',
+    guides: [
+      {
+        id: 'progression',
+        title: 'Relationship Progression',
+        steps: [
+          {
+            title: 'Build hearts with villagers',
+            detail: 'Talking, joking, and gifting all raise the hearts meter. Check a villager’s mood first — the same gift lands differently on a bad day.',
+          },
+          {
+            title: 'Get engaged at 50 hearts',
+            detail: 'Craft an Engagement Ring (7 Gold Ingots + 1 Diamond) and gift it once you reach 50 hearts.',
+          },
+          {
+            title: 'Marry at 100 hearts',
+            detail: 'Reach 100 hearts, then craft and gift a Wedding Ring (8 Gold Ingots) to tie the knot.',
+          },
+          {
+            title: 'Start a family',
+            detail: 'Married couples can have children, who start as babies and grow through life stages over real-world time.',
+          },
+          {
+            title: 'Assign chores to children',
+            detail: 'Farming, lumberjacking, and other chores make growing children productive members of the household.',
+          },
+          {
+            title: 'Protect the village with Guards',
+            detail: 'Recruit or rely on the Guard profession to defend your family from raiders and monsters.',
+          },
+        ],
+      },
     ],
     resourceChains: [
       { resource: 'Gold Ingots + Diamond', chain: 'Mining → Engagement Ring / Wedding Ring → marriage and family progression' },
@@ -503,12 +904,33 @@ export const MODS = [
       { ingredients: 'Shift + right-click a Nitwit or unemployed Villager with a Crossbow', output: 'Ranged Guard' },
       { ingredients: 'Guard + Shield or Food/Potion in the offhand slot', output: 'A guard that blocks attacks, or eats/drinks when low on health' },
     ],
-    progression: [
-      'Earn Hero of the Village by defending a raid, or find a village with guards already spawned.',
-      'Shift-right-click a nitwit or unemployed villager with a sword or crossbow to make it a guard.',
-      'Right-click the guard to open its inventory and equip armor and a weapon.',
-      'Give it a shield or food/potion for its offhand slot.',
-      'Use the Patrol button to station it, or Follow (needs Hero of the Village) to bring it with you.',
+    guides: [
+      {
+        id: 'progression',
+        title: 'Guard Setup',
+        steps: [
+          {
+            title: 'Find or earn your first guards',
+            detail: 'Guards spawn pre-armed in groups of six in villages, or you can earn Hero of the Village by defending a raid to unlock full control.',
+          },
+          {
+            title: 'Convert a villager into a guard',
+            detail: 'Shift-right-click a nitwit or unemployed villager while holding an Iron Sword (melee) or Crossbow (ranged).',
+          },
+          {
+            title: 'Equip armor and a weapon',
+            detail: 'Right-click the guard to open its gear slots — armor, main-hand weapon, and an offhand item.',
+          },
+          {
+            title: 'Fill the offhand slot',
+            detail: 'A Shield lets it block; food or a potion lets it self-heal during long fights.',
+          },
+          {
+            title: 'Station or bring them along',
+            detail: 'Patrol holds a fixed defensive position; Follow (requires Hero of the Village) brings the guard with you as a fighting companion.',
+          },
+        ],
+      },
     ],
     resourceChains: [
       { resource: 'Iron Sword / Crossbow', chain: 'Smithing or looting → weapon → shift-right-click unemployed villager → dedicated Guard' },
@@ -536,12 +958,33 @@ export const MODS = [
       { ingredients: 'Explore a themed biome village', output: 'New trade-ready villagers plus loot chests in themed structures' },
       { ingredients: 'Board a Villager Ship at sea', output: 'Trading villagers and lootable chests without a land village' },
     ],
-    progression: [
-      'Install the Cristel Lib dependency, which is required for the mod to load.',
-      'Generate a new world (or explore unloaded chunks) so the new structures can spawn.',
-      'Explore plains, desert, taiga, and other biomes to find their unique village variants.',
-      'Search deep ocean biomes for fleets of villager trading ships.',
-      'Raid or defend against the new pillager outpost variants like forts, towers, and ruins.',
+    guides: [
+      {
+        id: 'progression',
+        title: 'Exploration Guide',
+        steps: [
+          {
+            title: 'Install the Cristel Lib dependency',
+            detail: 'Towns and Towers requires Cristel Lib to load — without it, none of its structures generate.',
+          },
+          {
+            title: 'Generate fresh chunks',
+            detail: 'Start a new world or push into unexplored territory; already-generated chunks never retroactively gain the new structures.',
+          },
+          {
+            title: 'Tour the biome villages',
+            detail: 'Plains, desert, taiga, and other biomes each get unique village variants with themed loot and trades.',
+          },
+          {
+            title: 'Hunt for villager ships',
+            detail: 'Fleets of trading ships spawn in deep ocean biomes — easy to miss, so watch the horizon while boating.',
+          },
+          {
+            title: 'Raid the new outposts',
+            detail: 'Pillager outposts now come as forts, towers, and ruins — raid them or defend against them for captain drops.',
+          },
+        ],
+      },
     ],
     resourceChains: [
       { resource: 'Village exploration', chain: 'New biome village → themed loot + trades → early-game gear and emeralds' },
@@ -569,12 +1012,33 @@ export const MODS = [
       { ingredients: 'Explore a biome (desert, taiga, savanna, etc.)', output: "That biome's unique overhauled village variant" },
       { ingredients: 'Locate a pillager outpost', output: 'One of 14 redesigned outpost styles (fort, tower, ruin, etc.)' },
     ],
-    progression: [
-      'Install the mod (Forge or Fabric) before generating your world for full effect.',
-      "Explore different biomes to see each one's unique overhauled village layout.",
-      'Trade and loot through the larger structures for expanded early-game resources.',
-      'Seek out pillager outposts to find one of the 14 redesigned variants.',
-      'Use the bigger villages as a home base since they include more houses and job sites.',
+    guides: [
+      {
+        id: 'progression',
+        title: 'Exploration Guide',
+        steps: [
+          {
+            title: 'Install before world generation',
+            detail: 'The mod replaces vanilla village generation, so install it (Forge or Fabric) before creating your world for full effect.',
+          },
+          {
+            title: 'Explore biome by biome',
+            detail: 'All 23 village variants are biome-styled — each biome you visit shows a different overhauled layout built from vanilla blocks.',
+          },
+          {
+            title: 'Trade and loot the bigger villages',
+            detail: 'Larger structures mean more villagers, more job sites, and more loot chests — a strong early-game resource boost.',
+          },
+          {
+            title: 'Find the redesigned outposts',
+            detail: 'Pillager outposts come in 14 variants — forts, homes, towers, and ruins — so watch silhouettes rather than one memorized shape.',
+          },
+          {
+            title: 'Settle in as a home base',
+            detail: 'The expanded villages have enough houses and job sites to serve as a ready-made base while you establish yourself.',
+          },
+        ],
+      },
     ],
     resourceChains: [
       { resource: 'Biome variety', chain: 'World generation → biome-matched village style → themed loot and trades unique to that biome' },

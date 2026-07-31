@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { MODS, countsByCategory } from '../data/mods';
+import { MODS, countsByCategory, normalizeStep } from '../data/mods';
 import { fetchNotes, fetchProgress, progressSummary } from '../utils/storage';
 import CategoryChips from '../components/CategoryChips';
 import ModCard from '../components/ModCard';
@@ -37,6 +37,17 @@ export default function HomePage() {
       if (m.recipes.some((r) => r.ingredients.toLowerCase().includes(q) || r.output.toLowerCase().includes(q)))
         return true;
       if (m.resourceChains.some((rc) => rc.resource.toLowerCase().includes(q) || rc.chain.toLowerCase().includes(q)))
+        return true;
+      if (
+        m.guides.some(
+          (g) =>
+            g.title.toLowerCase().includes(q) ||
+            g.steps.some((s) => {
+              const step = normalizeStep(s);
+              return step.title.toLowerCase().includes(q) || step.detail.toLowerCase().includes(q);
+            })
+        )
+      )
         return true;
       return false;
     });
