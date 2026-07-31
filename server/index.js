@@ -24,7 +24,9 @@ app.get('/api/notes', (req, res) => {
 app.put('/api/notes/:modId', (req, res) => {
   const { modId } = req.params;
   const text = typeof req.body?.text === 'string' ? req.body.text : '';
-  if (text.length > MAX_NOTE_LENGTH) {
+  // Count Unicode code points, not UTF-16 code units, so non-BMP characters
+  // (emoji, etc.) each count as one character against the limit.
+  if ([...text].length > MAX_NOTE_LENGTH) {
     return res.status(400).json({ error: `note exceeds ${MAX_NOTE_LENGTH} characters` });
   }
   if (text.trim() === '') {
@@ -51,7 +53,7 @@ app.put('/api/progress/:modId/:stepIndex', (req, res) => {
   const { modId, stepIndex } = req.params;
   const index = Number(stepIndex);
   if (!Number.isInteger(index) || index < 0 || index > 1000) {
-    return res.status(400).json({ error: 'stepIndex must be a non-negative integer' });
+    return res.status(400).json({ error: 'stepIndex must be an integer from 0 through 1000' });
   }
   const done = Boolean(req.body?.done);
   if (!done) {
@@ -65,8 +67,9 @@ app.put('/api/progress/:modId/:stepIndex', (req, res) => {
 });
 
 // Unknown API routes get a JSON 404 instead of falling through to the SPA
-// fallback below, which would return index.html with a misleading 200.
-app.all('/api/*', (req, res) => {
+// fallback below, which would return index.html with a misleading 200. The
+// bare '/api' path needs its own pattern — '/api/*' alone doesn't match it.
+app.all(['/api', '/api/*'], (req, res) => {
   res.status(404).json({ error: 'not found' });
 });
 

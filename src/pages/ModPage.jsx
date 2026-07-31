@@ -17,6 +17,9 @@ export default function ModPage() {
   const saveTimer = useRef(null);
   const pendingSave = useRef(null); // { modId, text } while a debounced save is queued
   const noteDirty = useRef(false);
+  // Toggles made since mount, keyed by guideKey — overlaid onto the fetched
+  // progress so a slow fetch can't clobber checkboxes clicked while in flight.
+  const localToggles = useRef({});
 
   useEffect(() => {
     if (!mod) return;
@@ -27,7 +30,16 @@ export default function ModPage() {
       // Don't clobber text the user already started typing while we fetched
       if (!noteDirty.current) setNote(notes[mod.id] || '');
     });
-    fetchProgress().then(setProgress);
+    localToggles.current = {};
+    fetchProgress().then((data) => {
+      setProgress(() => {
+        const merged = { ...data };
+        for (const [key, steps] of Object.entries(localToggles.current)) {
+          merged[key] = { ...merged[key], ...steps };
+        }
+        return merged;
+      });
+    });
     return () => {
       clearTimeout(saveTimer.current);
       // Flush a still-debounced edit instead of dropping it on navigation
@@ -56,11 +68,12 @@ export default function ModPage() {
 
   function toggleStep(guideId, index) {
     const key = guideKey(mod.id, guideId);
-    setProgress((prev) => {
-      const done = !prev[key]?.[index];
-      saveProgressStep(mod.id, guideId, index, done);
-      return { ...prev, [key]: { ...prev[key], [index]: done } };
-    });
+    // Compute outside the state updater — updaters must stay pure (StrictMode
+    // double-invokes them, which would fire duplicate PUTs).
+    const done = !progress[key]?.[index];
+    saveProgressStep(mod.id, guideId, index, done);
+    localToggles.current[key] = { ...localToggles.current[key], [index]: done };
+    setProgress((prev) => ({ ...prev, [key]: { ...prev[key], [index]: done } }));
   }
 
   return (

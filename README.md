@@ -1,6 +1,6 @@
 # Modpack Codex
 
-A personal reference dashboard for the mods in a Minecraft modpack (NeoForge · 1.21.1). Each mod gets a page with a checkable progression list, its machines and blocks, key recipes, resource chains, tips, and a free-form notes area. Progress and notes are stored server-side in SQLite, so they survive browser resets and are shared across devices.
+A personal reference dashboard for the mods in a Minecraft modpack (NeoForge · 1.21.1). Each mod gets a page with one or more named step-by-step guides (a core progression plus focused build guides), each with its own independently tracked checkable steps, alongside its machines and blocks, key recipes, resource chains, tips, and a free-form notes area. Progress and notes are stored server-side in SQLite, so they survive browser resets and are shared across devices.
 
 ## Stack
 
@@ -46,6 +46,8 @@ Each mod has one or more **guides** — named, checkable step-by-step walkthroug
 | --- | --- | --- |
 | `GET` | `/api/health` | Liveness check |
 | `GET` | `/api/notes` | All notes, keyed by mod id |
-| `PUT` | `/api/notes/:modId` | Upsert `{ text }` (empty text deletes) |
-| `GET` | `/api/progress` | All progress, keyed by mod id → step index |
-| `PUT` | `/api/progress/:modId/:stepIndex` | Set `{ done }` for one step |
+| `PUT` | `/api/notes/:modId` | Upsert `{ text }` (empty text deletes; text over 20,000 characters returns HTTP 400) |
+| `GET` | `/api/progress` | All progress, keyed by guide key → step index |
+| `PUT` | `/api/progress/:guideKey/:stepIndex` | Set `{ done }` for one step of one guide |
+
+Progress is keyed per guide via `guideKey(modId, guideId)` (see `src/utils/storage.js`): the default `progression` guide uses the bare mod id (so pre-guides data still counts), and every other guide uses `modId/guideId`.

@@ -39,6 +39,13 @@ export default function ModDetail({ mod, note, noteStatus, onNoteChange, progres
   const [activeSection, setActiveSection] = useState(sections[0].id);
   const sectionRefs = useRef({});
 
+  // Summaries for the sidebar switcher — computed once per progress change,
+  // not on every scroll-spy render.
+  const switcherSummaries = useMemo(
+    () => MODS.map((m) => ({ m, summary: progressSummary(m, progress) })),
+    [progress]
+  );
+
   useEffect(() => {
     const ids = sections.map((s) => s.id);
     const offset = 110; // sticky header height + breathing room
@@ -129,7 +136,8 @@ export default function ModDetail({ mod, note, noteStatus, onNoteChange, progres
                     // Scroll without pushing a #hash history entry, which would
                     // make the back button step through section jumps.
                     e.preventDefault();
-                    sectionRefs.current[s.id]?.scrollIntoView({ behavior: 'smooth' });
+                    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+                    sectionRefs.current[s.id]?.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth' });
                   }}
                 >
                   {s.label}
@@ -140,10 +148,9 @@ export default function ModDetail({ mod, note, noteStatus, onNoteChange, progres
 
           <div className="mod-switcher">
             <div className="mod-switcher-title">SWITCH MOD</div>
-            {MODS.map((m) => {
+            {switcherSummaries.map(({ m, summary: { done, total } }) => {
               const current = m.id === mod.id;
               const mColor = catColor(m.category);
-              const { done, total } = progressSummary(m, progress);
               return (
                 <Link
                   key={m.id}
@@ -182,7 +189,13 @@ export default function ModDetail({ mod, note, noteStatus, onNoteChange, progres
             const doneCount = guide.steps.filter((_, i) => saved[i]).length;
             const sectionId = `guide-${guide.id}`;
             return (
-              <section key={guide.id} id={sectionId} ref={(el) => (sectionRefs.current[sectionId] = el)}>
+              <section
+                key={guide.id}
+                id={sectionId}
+                ref={(el) => {
+                  sectionRefs.current[sectionId] = el;
+                }}
+              >
                 <div className="section-heading-row">
                   <h2 className="section-title">{guide.title}</h2>
                   <div className="progress-count" style={{ color }}>
@@ -224,7 +237,9 @@ export default function ModDetail({ mod, note, noteStatus, onNoteChange, progres
             );
           })}
 
-          <section id="machines" ref={(el) => (sectionRefs.current.machines = el)}>
+          <section id="machines" ref={(el) => {
+              sectionRefs.current.machines = el;
+            }}>
             <h2 className="section-title">Machines &amp; Blocks</h2>
             <div className="machine-grid">
               {mod.machines.map((machine, i) => (
@@ -236,7 +251,9 @@ export default function ModDetail({ mod, note, noteStatus, onNoteChange, progres
             </div>
           </section>
 
-          <section id="recipes" ref={(el) => (sectionRefs.current.recipes = el)}>
+          <section id="recipes" ref={(el) => {
+              sectionRefs.current.recipes = el;
+            }}>
             <h2 className="section-title">Key Recipes</h2>
             <div className="recipe-list">
               {mod.recipes.map((recipe, i) => (
@@ -251,7 +268,9 @@ export default function ModDetail({ mod, note, noteStatus, onNoteChange, progres
             </div>
           </section>
 
-          <section id="chains" ref={(el) => (sectionRefs.current.chains = el)}>
+          <section id="chains" ref={(el) => {
+              sectionRefs.current.chains = el;
+            }}>
             <h2 className="section-title">Resource Chains</h2>
             <div className="chain-list">
               {mod.resourceChains.map((rc, i) => (
@@ -265,7 +284,9 @@ export default function ModDetail({ mod, note, noteStatus, onNoteChange, progres
             </div>
           </section>
 
-          <section id="tips" ref={(el) => (sectionRefs.current.tips = el)}>
+          <section id="tips" ref={(el) => {
+              sectionRefs.current.tips = el;
+            }}>
             <h2 className="section-title">Tips &amp; Gotchas</h2>
             <div className="tips-list">
               {mod.tips.map((tip, i) => (
@@ -277,7 +298,9 @@ export default function ModDetail({ mod, note, noteStatus, onNoteChange, progres
             </div>
           </section>
 
-          <section id="notes" ref={(el) => (sectionRefs.current.notes = el)}>
+          <section id="notes" ref={(el) => {
+              sectionRefs.current.notes = el;
+            }}>
             <div className="section-heading-row">
               <h2 className="section-title">My Notes</h2>
               {NOTE_STATUS_TEXT[noteStatus] && (
