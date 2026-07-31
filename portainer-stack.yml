@@ -1,0 +1,12 @@
+services:
+  modpack-codex:
+    image: ghcr.io/theshield2594/minecraftmoddashboard:latest
+    container_name: modpack-codex
+    ports:
+      - "8080:8080"
+    volumes:
+      - modpack-codex-data:/data
+    restart: unless-stopped
+
+volumes:
+  modpack-codex-data:
