@@ -52,6 +52,14 @@ export default function ModCard({ mod, hasNote, progress }) {
         )}
       </div>
       <div className="mod-desc">{mod.description}</div>
+      <div className="mod-card-guides">
+        {mod.guides.map((g) => (
+          <span className="mod-card-guide" key={g.id} style={{ color }}>
+            ▸ {g.title}
+            <span className="mod-card-guide-steps"> · {g.steps.length} steps</span>
+          </span>
+        ))}
+      </div>
     </Link>
   );
 }

@@ -393,6 +393,32 @@ export const MODS = [
           },
         ],
       },
+      {
+        id: 'first-kitchen',
+        title: 'Set Up a Kitchen',
+        steps: [
+          {
+            title: 'Build a heat source',
+            detail: 'A campfire or stove provides the heat the Cooking Pot needs — put it where the pot will sit before anything else.',
+          },
+          {
+            title: 'Place the Cutting Board and craft a knife',
+            detail: 'The board plus a knife handles all prep work: slicing meat into portions, making dough, and splitting ingredients.',
+          },
+          {
+            title: 'Set the Cooking Pot over the heat',
+            detail: 'Place the pot directly above the campfire or stove — it only cooks while heated from below.',
+          },
+          {
+            title: 'Stock the larder',
+            detail: 'Keep chests of Tomatoes, Onions, Cabbage, Rice, and meats next to the station so every recipe is within reach.',
+          },
+          {
+            title: 'Cook your first stew',
+            detail: 'Start simple: three vegetables and broth make Vegetable Soup. Once that works, move up to the multi-ingredient feasts.',
+          },
+        ],
+      },
     ],
     resourceChains: [
       { resource: 'Wheat Dough', chain: 'Wheat + Water (Cutting Board) → Wheat Dough → Pasta/Pie Crust' },
@@ -455,6 +481,32 @@ export const MODS = [
             title: 'Mix materials for hybrid stats',
             detail:
               "A tool's head, rod, and extras each contribute stats and traits — pair a hard-hitting head with a lightweight rod to balance speed, durability, and special effects.",
+          },
+        ],
+      },
+      {
+        id: 'first-pickaxe',
+        title: 'Forge a Custom Pickaxe',
+        steps: [
+          {
+            title: 'Choose your head material',
+            detail: 'The head sets harvest tier, speed, and most of the durability — compare tooltips before committing your ingots.',
+          },
+          {
+            title: 'Craft the Pickaxe Head',
+            detail: 'Combine the Pickaxe Head Blueprint with your chosen material (e.g. 2x Iron Ingot) in the crafting grid.',
+          },
+          {
+            title: 'Craft a Tool Rod',
+            detail: 'The Tool Rod Blueprint plus planks (or a fancier material) makes the handle — lighter rods trade durability for other bonuses.',
+          },
+          {
+            title: 'Assemble head and rod',
+            detail: 'Put the head and rod together on any crafting grid. The finished pickaxe inherits every stat and trait from its parts.',
+          },
+          {
+            title: 'Inspect, then iterate',
+            detail: 'Read the tooltip to see the stat rolls you got. Not happy? Salvage it and rebuild with graded or higher-tier materials — nothing is wasted.',
           },
         ],
       },
@@ -523,6 +575,32 @@ export const MODS = [
           },
         ],
       },
+      {
+        id: 'fight-prep',
+        title: 'Prepare for a Boss Fight',
+        steps: [
+          {
+            title: 'Max out your gear first',
+            detail: 'Netherite-tier armor with strong enchants is the baseline. Bring your best weapon and a backup — fights are long.',
+          },
+          {
+            title: 'Brew a consumables kit',
+            detail: 'Golden apples, healing, strength, and (for Nether bosses) fire resistance potions. Stock more than you think you need.',
+          },
+          {
+            title: 'Check the summoning requirement',
+            detail: "Some bosses need an item to start — the Harbinger takes a Nether Star in its chest. Confirm before you travel so the trip isn't wasted.",
+          },
+          {
+            title: 'Prepare the arena',
+            detail: 'Clear obstacles, light the area, and plan your escape route. Terrain kills as often as the boss does.',
+          },
+          {
+            title: 'Learn the tells before committing',
+            detail: 'Every boss telegraphs its big attacks and most enrage at low health. Spend the first phase watching patterns, not chasing damage.',
+          },
+        ],
+      },
     ],
     resourceChains: [
       { resource: 'Ignitium', chain: 'Defeat Ignis → Ignitium Ingots → Forge → Ignitium Armor / Incinerator / Bulwark of the Flame' },
@@ -579,6 +657,32 @@ export const MODS = [
           {
             title: 'Nest with an Inception Upgrade',
             detail: 'Store specialized backpacks inside one master backpack and access them all without unpacking anything.',
+          },
+        ],
+      },
+      {
+        id: 'mining-backpack',
+        title: 'Build a Mining Backpack',
+        steps: [
+          {
+            title: 'Upgrade to Iron tier or better',
+            detail: 'Higher tiers add the upgrade slots this build needs — Leather alone will not fit the full loadout.',
+          },
+          {
+            title: 'Slot a Pickup Upgrade',
+            detail: 'Every ore, cobble, and drop you mine over gets vacuumed straight in — your hotbar stays clean for tools.',
+          },
+          {
+            title: 'Filter what gets picked up',
+            detail: 'Configure the pickup filter so ores and valuables come in while junk stays on the ground (or void the junk).',
+          },
+          {
+            title: 'Add Stack Upgrades',
+            detail: 'Deep mining sessions fill slots fast — Stack Upgrades multiply capacity so one trip carries the whole vein.',
+          },
+          {
+            title: 'Empty it in one click',
+            detail: 'Back at base, use the deposit controls against your storage to unload the entire haul at once.',
           },
         ],
       },
@@ -645,6 +749,32 @@ export const MODS = [
           },
         ],
       },
+      {
+        id: 'drawer-wall',
+        title: 'Build a Drawer Wall',
+        steps: [
+          {
+            title: 'Plan the layout',
+            detail: 'Bulk items (cobble, dirt, wood) get 1x1 drawers at waist height; variety items get 2x2 and 4x4 higher up. Sketch it before placing.',
+          },
+          {
+            title: 'Place the drawers',
+            detail: 'Build the wall face-out so every label is visible. Leave a spot at eye level, center, for the Controller.',
+          },
+          {
+            title: 'Add the Drawer Controller',
+            detail: 'One Controller makes the whole wall a single deposit point — shift-click stacks (or double-click to dump matching items) and everything routes itself.',
+          },
+          {
+            title: 'Connect the corners with Trim',
+            detail: 'Any drawer more than a block gap away needs Trim to stay linked. It matches the wood style, so the wall still looks uniform.',
+          },
+          {
+            title: 'Upgrade the heavy hitters',
+            detail: 'Put Storage Upgrades in the drawers that fill fastest, and a Void Upgrade on cobblestone so mining never backs up.',
+          },
+        ],
+      },
     ],
     resourceChains: [
       { resource: 'Cobblestone / Ores', chain: 'Mining → dumped into linked Drawers via Controller → auto-sorted by item type → withdrawn in any quantity from the drawer face' },
@@ -700,6 +830,32 @@ export const MODS = [
           {
             title: 'Scale up with Relays and Accumulators',
             detail: 'Redstone Relays gate power flow with logic, and Accumulators buffer FE for burst loads — the building blocks of a larger network.',
+          },
+        ],
+      },
+      {
+        id: 'fe-bridge',
+        title: 'Bridge Create and FE Power',
+        steps: [
+          {
+            title: 'Spin up an Alternator',
+            detail: 'Attach an Alternator to a shaft off your main Create power line — it converts the rotation into Forge Energy.',
+          },
+          {
+            title: 'Wire it to storage',
+            detail: 'Place Large Connectors on the Alternator and an Accumulator, then link them with Wire. The Accumulator becomes your battery bank.',
+          },
+          {
+            title: 'Feed your FE machines',
+            detail: 'Run more wire from the Accumulator to any FE-based machines in the pack — they draw power like from any other mod’s generator.',
+          },
+          {
+            title: 'Convert back where needed',
+            detail: 'An Electric Motor at the far end turns stored FE back into rotation, letting you run remote Create contraptions without a second power source.',
+          },
+          {
+            title: 'Watch your stress budget',
+            detail: 'The Alternator adds stress load like any machine — check the network with a Stress-o-meter and add capacity before it grinds to a halt.',
           },
         ],
       },
@@ -761,6 +917,32 @@ export const MODS = [
           },
         ],
       },
+      {
+        id: 'first-line',
+        title: 'Run Your First Train Line',
+        steps: [
+          {
+            title: 'Pick two endpoints',
+            detail: 'Your base and one outpost (a mine, a farm, a village) make the ideal first route — short enough to debug, useful enough to keep.',
+          },
+          {
+            title: 'Lay the track and place Stations',
+            detail: 'Run track between the two points and place a Station block at each end — trains assemble, stop, and load at Stations.',
+          },
+          {
+            title: 'Assemble the train',
+            detail: 'At a Station, build the locomotive (steam engine, controls, whistle) plus any cargo or passenger cars, then assemble it into a train.',
+          },
+          {
+            title: 'Write the Schedule',
+            detail: 'A Schedule listing both stations with wait conditions (e.g. wait 10 seconds, or until cargo is full) makes the loop fully automatic.',
+          },
+          {
+            title: 'Test one full loop',
+            detail: 'Ride the first circuit yourself to catch missing signals, tight turns, or an underpowered boiler before trusting it with cargo.',
+          },
+        ],
+      },
     ],
     resourceChains: [
       { resource: 'Steam Power', chain: "Water + fuel (coal/charcoal) → heated Boiler → steam pressure → drives the Locomotive's Steam Engine" },
@@ -816,6 +998,32 @@ export const MODS = [
           {
             title: 'Theme rooms with mixed styles',
             detail: 'Mixing wood types and style sets (medieval, steampunk, fantasy) gives each room or build its own identity.',
+          },
+        ],
+      },
+      {
+        id: 'dining-room',
+        title: 'Build a Cozy Dining Room',
+        steps: [
+          {
+            title: 'Pick one wood type',
+            detail: 'A single wood keeps the room coherent — match the house’s floor or trim so the furniture looks built-in.',
+          },
+          {
+            title: 'Place the table and seating',
+            detail: 'A long table with Chairs and a Bench mixes seat heights and makes the room feel used, not staged.',
+          },
+          {
+            title: 'Add Cushions for color',
+            detail: 'Dyed Cushions on the seating tie the room to your palette — swap them any time without recrafting.',
+          },
+          {
+            title: 'Dress the walls',
+            detail: 'Shelves with pots, plates, and books at eye level fill the empty wall space that makes rooms feel bare.',
+          },
+          {
+            title: 'Finish with a Cabinet',
+            detail: 'A matching-wood Cabinet in the corner adds working storage for food and dishes — decoration that earns its slot.',
           },
         ],
       },
@@ -877,6 +1085,32 @@ export const MODS = [
           },
         ],
       },
+      {
+        id: 'raise-family',
+        title: 'Raise a Family',
+        steps: [
+          {
+            title: 'Settle into a shared home',
+            detail: 'After marrying, establish a house with beds for the whole family — your spouse and children live there.',
+          },
+          {
+            title: 'Welcome the baby',
+            detail: 'Children start as babies you can carry, name, and watch grow through toddler and child stages over real-world time.',
+          },
+          {
+            title: 'Assign chores early',
+            detail: 'Farming, lumberjacking, and other chores make growing kids productive — several real hours pass before adulthood, so put the time to work.',
+          },
+          {
+            title: 'Keep relationships warm',
+            detail: 'Family members still track hearts — keep talking and gifting so the household stays happy.',
+          },
+          {
+            title: 'Guard the homestead',
+            detail: 'Station Guards near the family home; raids and night mobs do not care that you have a baby to protect.',
+          },
+        ],
+      },
     ],
     resourceChains: [
       { resource: 'Gold Ingots + Diamond', chain: 'Mining → Engagement Ring / Wedding Ring → marriage and family progression' },
@@ -928,6 +1162,32 @@ export const MODS = [
           {
             title: 'Station or bring them along',
             detail: 'Patrol holds a fixed defensive position; Follow (requires Hero of the Village) brings the guard with you as a fighting companion.',
+          },
+        ],
+      },
+      {
+        id: 'village-defense',
+        title: 'Fortify a Village',
+        steps: [
+          {
+            title: 'Count your defenders',
+            detail: 'Villages spawn with about six armed guards — walk the perimeter and note where coverage is thin before converting more.',
+          },
+          {
+            title: 'Convert extra guards',
+            detail: 'Nitwits and unemployed villagers are free manpower: sword for melee at the gates, crossbow for towers and rooftops.',
+          },
+          {
+            title: 'Upgrade their gear',
+            detail: 'Iron or better armor on every guard, shields for the melee line, and food in offhands so they outlast a raid wave.',
+          },
+          {
+            title: 'Set patrol positions',
+            detail: 'Station melee guards at entrances and choke points, ranged guards on elevated spots with clear sightlines.',
+          },
+          {
+            title: 'Stress-test with a raid',
+            detail: 'The next raid shows the gaps — reposition after each wave and the village eventually defends itself without you.',
           },
         ],
       },
@@ -985,6 +1245,32 @@ export const MODS = [
           },
         ],
       },
+      {
+        id: 'find-ship',
+        title: 'Find a Villager Ship',
+        steps: [
+          {
+            title: 'Build a fast boat',
+            detail: 'You will cover a lot of open water — bring a boat, food, and spare wood for repairs or a dock.',
+          },
+          {
+            title: 'Head for deep ocean',
+            detail: 'Ships spawn in deep ocean biomes, far from shore — coastal waters will not have them.',
+          },
+          {
+            title: 'Scan the horizon',
+            detail: 'Masts and sails are the giveaway silhouette. They are easy to miss, so sweep your view constantly while sailing.',
+          },
+          {
+            title: 'Board and trade',
+            detail: 'The crew are working trade villagers — a floating market when you are days from any land village.',
+          },
+          {
+            title: 'Mark the coordinates',
+            detail: 'Log the position (or map marker) before sailing on — a known ship is a renewable trading stop on future voyages.',
+          },
+        ],
+      },
     ],
     resourceChains: [
       { resource: 'Village exploration', chain: 'New biome village → themed loot + trades → early-game gear and emeralds' },
@@ -1036,6 +1322,32 @@ export const MODS = [
           {
             title: 'Settle in as a home base',
             detail: 'The expanded villages have enough houses and job sites to serve as a ready-made base while you establish yourself.',
+          },
+        ],
+      },
+      {
+        id: 'village-base',
+        title: 'Claim a Village Home Base',
+        steps: [
+          {
+            title: 'Scout a few variants first',
+            detail: 'With 23 biome-styled layouts, villages differ a lot — visit two or three before choosing where to settle.',
+          },
+          {
+            title: 'Pick your house',
+            detail: 'The overhauled builds are larger than vanilla — claim one with room for storage, a bed, and a crafting corner.',
+          },
+          {
+            title: 'Light everything',
+            detail: 'Bigger villages have more dark corners than vanilla ones — torch the streets and interiors before the first night.',
+          },
+          {
+            title: 'Use the job sites',
+            detail: 'More houses means more workstations — cycle villagers onto the professions you need for trades.',
+          },
+          {
+            title: 'Expand in the same style',
+            detail: 'The structures are pure vanilla blocks, so you can extend any building with matching materials and it reads as original.',
           },
         ],
       },

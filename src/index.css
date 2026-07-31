@@ -397,6 +397,25 @@ a:hover {
   color: oklch(0.75 0.015 260);
 }
 
+.mod-card-guides {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin-top: auto;
+  padding-top: 4px;
+  border-top: 1px solid oklch(0.27 0.018 260);
+}
+
+.mod-card-guide {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.02em;
+}
+
+.mod-card-guide-steps {
+  color: oklch(0.55 0.02 260);
+}
+
 .no-results {
   text-align: center;
   padding: 80px 20px;
