@@ -1,13 +1,14 @@
+import { Link } from 'react-router-dom';
 import { catColor, catColorBg, catColorBorder, catIconRadius, catIconClip, catLabel } from '../data/mods';
 
-export default function ModCard({ mod, onClick, hasNote, progress }) {
+export default function ModCard({ mod, hasNote, progress }) {
   const color = catColor(mod.category);
   const showProgress = progress && progress.done > 0;
 
   return (
-    <div
+    <Link
+      to={`/mod/${mod.id}`}
       className="mod-card"
-      onClick={onClick}
       style={{ '--card-border-hover': catColorBorder(mod.category), '--card-glow': catColorBg(mod.category) }}
     >
       <div className="mod-card-top">
@@ -51,6 +52,6 @@ export default function ModCard({ mod, onClick, hasNote, progress }) {
         )}
       </div>
       <div className="mod-desc">{mod.description}</div>
-    </div>
+    </Link>
   );
 }

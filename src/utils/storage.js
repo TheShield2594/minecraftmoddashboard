@@ -8,15 +8,18 @@ async function getJSON(url, fallback) {
   }
 }
 
+// Resolves true when the server accepted the write, false when the API is
+// unreachable or rejected it — callers can surface a "not saved" state.
 async function putJSON(url, body) {
   try {
-    await fetch(url, {
+    const res = await fetch(url, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),
     });
+    return res.ok;
   } catch {
-    // API unreachable — edit stays in local state only until the next reload
+    return false;
   }
 }
 

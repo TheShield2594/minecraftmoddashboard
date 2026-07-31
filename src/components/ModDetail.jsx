@@ -10,7 +10,13 @@ const SECTIONS = [
   { id: 'notes', label: 'MY NOTES' },
 ];
 
-export default function ModDetail({ mod, note, onNoteChange, steps, onToggleStep }) {
+const NOTE_STATUS_TEXT = {
+  saving: 'SAVING…',
+  saved: 'SAVED ✓',
+  error: 'OFFLINE — NOT SAVED',
+};
+
+export default function ModDetail({ mod, note, noteStatus, onNoteChange, steps, onToggleStep }) {
   const color = catColor(mod.category);
   const colorBg = catColorBg(mod.category);
   const colorBorder = catColorBorder(mod.category);
@@ -92,6 +98,12 @@ export default function ModDetail({ mod, note, onNoteChange, steps, onToggleStep
                 href={`#${s.id}`}
                 className={`mod-nav-link${active ? ' active' : ''}`}
                 style={active ? { color, background: colorBg } : undefined}
+                onClick={(e) => {
+                  // Scroll without pushing a #hash history entry, which would
+                  // make the back button step through section jumps.
+                  e.preventDefault();
+                  sectionRefs.current[s.id]?.scrollIntoView({ behavior: 'smooth' });
+                }}
               >
                 {s.label}
               </a>
@@ -191,7 +203,14 @@ export default function ModDetail({ mod, note, onNoteChange, steps, onToggleStep
           </section>
 
           <section id="notes" ref={(el) => (sectionRefs.current.notes = el)}>
-            <h2 className="section-title">My Notes</h2>
+            <div className="section-heading-row">
+              <h2 className="section-title">My Notes</h2>
+              {NOTE_STATUS_TEXT[noteStatus] && (
+                <div className={`note-status${noteStatus === 'error' ? ' note-status-error' : ''}`} role="status">
+                  {NOTE_STATUS_TEXT[noteStatus]}
+                </div>
+              )}
+            </div>
             <textarea
               className="notes-textarea"
               value={note}

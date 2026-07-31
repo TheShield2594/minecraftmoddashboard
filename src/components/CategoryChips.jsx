@@ -12,7 +12,7 @@ export default function CategoryChips({ category, counts, onSelect }) {
           fontWeight: active ? 700 : 500,
         };
         return (
-          <button key={cat.key} className="chip" style={style} onClick={() => onSelect(cat.key)}>
+          <button key={cat.key} className="chip" style={style} aria-pressed={active} onClick={() => onSelect(cat.key)}>
             {cat.label}
             <span className="chip-count"> ({counts?.[cat.key] ?? 0})</span>
           </button>
